@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<link href="../options.css" rel="stylesheet" type="text/css">
+</head>
+
+<body class="dark">
+	<div id="loading">
+		<h4>Loading…</h4>
+		<h1>&nbsp;</h1>
+		<h1>&nbsp;</h1>
+		<h1>&nbsp;</h1>
+		<h1>&nbsp;</h1>
+		<h1>&nbsp;</h1>
+	</div>
+	<div id="settings" hidden="true">
+		<div>
+			<h4>
+				<input id="color_scheme_no_dark" type="radio" />
+				<label for="color_scheme_no_dark" title="Use light color scheme for browser">Prefer Light Mode</label>
+			</h4>
+			<h4>
+				<input id="color_scheme_no_light" type="radio" />
+				<label for="color_scheme_no_light" title="Use dark color scheme for browser">Prefer Dark Mode</label>
+			</h4>
+			<h4>
+				<input id="color_scheme_system" type="radio" />
+				<label for="color_scheme_system" title="Use system color scheme for browser">Follow System (recommended)</label>
+			</h4>
+			<hr>
+			<h4 title="Allow tab bar to turn bright">
+				<input id="force_mode" type="checkbox" />
+				<label id="force_mode_caption" for="force_mode">Allow light tab bar</label>
+			</h4>
+			<h4 title="Updates tab bar color while scrolling">
+				<input id="dynamic" type="checkbox" />
+				<label for="dynamic">Dynamic color update</label>
+			</h4>
+			<hr>
+			<h4 title="Set tab bar color offset">
+				<label for="tabbar_color" class="TenEm">Tab bar color offset</label>
+				<input type="range" id="tabbar_color" min="0" max="0.2" step="0.05" value="0">
+			</h4>
+			<h4
+				title="Set tool bar color offset. Use the same value as tab bar color offset to prevent color transitioning">
+				<label for="toolbar_color" class="TenEm">Toolbar color offset</label>
+				<input type="range" id="toolbar_color" min="0" max="0.2" step="0.05" value="0">
+			</h4>
+			<h4 title="Set pop-up and URL field color offset">
+				<label for="popup_color" class="TenEm">URL field color offset</label>
+				<input type="range" id="popup_color" min="0" max="0.2" step="0.05" value="0.05">
+			</h4>
+			<h4 title="Color offset of separator line between browser UI and webpage">
+				<label for="separator_opacity" class="TenEm">Bottom line opacity</label>
+				<input type="range" id="separator_opacity" min="0" max="0.2" step="0.05" value="0.05">
+			</h4>
+			<hr>
+			<h4>
+				<input id="more_custom" type="checkbox">
+				<label for="more_custom">Set color for specific domains</label>
+			</h4>
+		</div>
+		<div id="custom_options" hidden="true">
+			<table id="custom_options_table">
+				<tr>
+					<td class="TenEm"><span>about:home light</span></td>
+					<td>
+						<select>
+							<option selected>specify a color</option>
+						</select>
+					</td>
+					<td>
+						<input class="FiveEm" type="color" value="#FFFFFF" id="light_color">
+					</td>
+					<td>
+						<button id="reset_light_color" title="Reset">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+								<path d="M2.5 2v6h6M21.5 22v-6h-6" />
+								<path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2" />
+							</svg>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="TenEm"><span>about:home dark</span></td>
+					<td>
+						<select>
+							<option selected>specify a color</option>
+						</select>
+					</td>
+					<td>
+						<input class="FiveEm" type="color" value="#2B2A33" id="dark_color">
+					</td>
+					<td>
+						<button id="reset_dark_color" title="Reset">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+								<path d="M2.5 2v6h6M21.5 22v-6h-6" />
+								<path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2" />
+							</svg>
+						</button>
+					</td>
+				</tr>
+			</table>
+			<div style="padding: 4px;">
+				<span>
+					<button id="reset_all" title="Restore initial state / Reset all rules">
+						<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none"
+							stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2">
+							</polygon>
+							<line x1="12" y1="8" x2="12" y2="12"></line>
+							<line x1="12" y1="16" x2="12.01" y2="16"></line>
+						</svg>
+					</button>
+				</span>
+				<span>
+					<button id="add" title="Add a new rule">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+							<line x1="12" y1="5" x2="12" y2="19"></line>
+							<line x1="5" y1="12" x2="19" y2="12"></line>
+						</svg>
+					</button>
+				</span>
+			</div>
+		</div>
+		<hr>
+		<div>
+			<p><a href="https://github.com/YS-Wong/Adaptive-Tab-Bar-Color/issues">Report an issue / submit a
+					suggestion</a></p>
+		</div>
+		<form action="https://www.paypal.com/donate" method="post" target="_blank">
+			<input type="hidden" name="hosted_button_id" value="T5GL8WC7SVLLC" />
+			<input type="image" src="https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif" border="0"
+				name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+			<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+		</form>
+	</div>
+	<p>&nbsp;</p>
+	<script type="text/javascript" src="../options.js"></script>
+</body>
+
+</html>
