@@ -1,6 +1,6 @@
 <!-- ![Icon](https://github.com/YS-Wong/Adaptive-Tab-Bar-Color/blob/main/images/ATBC_128.png) -->
 # SVG Replacer
-Replace SVG with custom ones on websites  
+Replaces SVG with custom ones on websites  
 <!-- <br>
 **[![Get it for Firefox!](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/adaptive-tab-bar-color/?utm_source=github.com&utm_medium=git&utm_content=download-button&campaign=github)**  
 <br>

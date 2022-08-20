@@ -1,9 +1,9 @@
 /**
  * @author Nick Scialli
- * @param {SVGElement} svg 
+ * @param {SVGElement} SVG 
  */
-function autoScaleSVG(svg) {
-	const { xMin, xMax, yMin, yMax } = [...svg.children].reduce((acc, el) => {
+function autoScaleSVG(SVG) {
+	const { xMin, xMax, yMin, yMax } = [...SVG.children].reduce((acc, el) => {
 		const { x, y, width, height } = el.getBBox();
 		if (!acc.xMin || x < acc.xMin) acc.xMin = x;
 		if (!acc.xMax || x + width > acc.xMax) acc.xMax = x + width;
@@ -12,5 +12,5 @@ function autoScaleSVG(svg) {
 		return acc;
 	}, {});
 	const viewbox = `${xMin} ${yMin} ${xMax - xMin} ${yMax - yMin}`;
-	svg.setAttribute('viewBox', viewbox);
+	SVG.setAttribute('viewBox', viewbox);
 }

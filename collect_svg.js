@@ -1,2 +1,2 @@
-const svgCollection = document.getElementsByClassName("svg");
-svgCollection;
+const SVGCollection = document.getElementsByClassName("svg");
+SVGCollection;
