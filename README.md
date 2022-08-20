@@ -1,4 +1,4 @@
-![Icon](https://github.com/YS-Wong/Adaptive-Tab-Bar-Color/blob/main/images/ATBC_128.png)
+<!-- ![Icon](https://github.com/YS-Wong/Adaptive-Tab-Bar-Color/blob/main/images/ATBC_128.png) -->
 # SVG Replacer
 Replace SVG with custom ones on websites  
 <!-- <br>
