@@ -1,2 +1,6 @@
-const SVGCollection = document.getElementsByClassName("svg");
-SVGCollection;
+const SVGCollection = document.getElementsByTagName("svg");
+const SVGContentCollection = {};
+for (let SVGElement of SVGCollection) {
+    SVGContentCollection[SVGElement.innerHTML] = "";
+}
+SVGContentCollection;

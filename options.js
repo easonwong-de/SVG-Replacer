@@ -1,4 +1,4 @@
-//This script is shared by option page and popup
+/* //This script is shared by option page and popup
 
 const default_reservedColor_cs = Object.freeze({
 	"developer.mozilla.org": "IGNORE_THEME",
@@ -47,12 +47,12 @@ var pref_popup_color;
 var pref_custom;
 var pref_light_home_color;
 var pref_dark_home_color;
-var pref_reservedColor_cs;
+var pref_reservedColor_cs; */
 
 /**
  * Loads preferences into cache.
  */
-function loadPref(pref) {
+/* function loadPref(pref) {
 	pref_scheme = pref.scheme;
 	pref_force = pref.force;
 	pref_dynamic = pref.dynamic;
@@ -65,12 +65,12 @@ function loadPref(pref) {
 	pref_dark_home_color = pref.dark_color;
 	pref_reservedColor_cs = pref.reservedColor_cs;
 	return true;
-}
+} */
 
 /**
  * @returns If all prefs are loaded.
  */
-function verifyPref() {
+/* function verifyPref() {
 	return pref_scheme != null
 		&& pref_force != null
 		&& pref_tabbar_color != null
@@ -81,9 +81,9 @@ function verifyPref() {
 		&& pref_light_home_color != null
 		&& pref_dark_home_color != null
 		&& pref_reservedColor_cs != null;
-}
+} */
 
-settings.hidden = true;
+/* settings.hidden = true;
 loading.hidden = false;
 
 load();
@@ -92,12 +92,12 @@ browser.theme.onUpdated.addListener(autoPageColor);
 //Load prefs when popup is opened
 document.addEventListener("pageshow", load);
 //Sync prefs on option page and popup
-browser.storage.onChanged.addListener(load_lite);
+browser.storage.onChanged.addListener(load_lite); */
 
 /**
  * Loads all prefs
  */
-function load() {
+/* function load() {
 	browser.storage.local.get(pref => {
 		if (loadPref(pref) && verifyPref()) {
 			allow_dark_light.checked = !pref_force;
@@ -130,12 +130,12 @@ function load() {
 			applySettings();
 		}
 	});
-}
+} */
 
 /**
  * Only loads color scheme, force mode, dynamic mode
  */
-function load_lite() {
+/* function load_lite() {
 	browser.storage.local.get(pref => {
 		if (loadPref(pref) && verifyPref()) {
 			allow_dark_light.checked = !pref_force;
@@ -174,21 +174,21 @@ color_scheme_system.addEventListener("input", () => {
 		changeColorScheme("system");
 	}
 });
-
+ */
 /**
  * Sets the color scheme, and updates appearance of option page.
  * 
  * @param {*} pending_scheme the name of the scheme to change to.
  */
-function changeColorScheme(pending_scheme) {
+/* function changeColorScheme(pending_scheme) {
 	pref_scheme = pending_scheme;
 	browser.storage.local.set({ scheme: pending_scheme });
 	if (firefoxAboveV95()) browser.browserSettings.overrideContentColorScheme.set({ value: pending_scheme });
 	autoPageColor();
-}
+} */
 
 //If it's below v95.0, grey out "allow..." option
-if (!firefoxAboveV95()) {
+/* if (!firefoxAboveV95()) {
 	allow_dark_light.checked = false;
 	allow_dark_light.disabled = true;
 } else {
@@ -207,14 +207,14 @@ dynamic.onclick = () => {
 	} else {
 		browser.storage.local.set({ dynamic: false });
 	}
-};
+}; */
 
 /**
  * Gives newly generated HTML elements actions.
  * 
  * @param {number} i The index number given to newly generated HTML elements.
  */
-function addAction(i) {
+/* function addAction(i) {
 	let domain_field = document.getElementById(`DOM_${i}`);
 	let select_menu = document.getElementById(`SEL_${i}`);
 	let operation = document.getElementById(`OPE_${i}`);
@@ -235,46 +235,13 @@ function addAction(i) {
 		autoSaveSettings();
 	};
 	operation.oninput = autoSaveSettings;
-}
+} */
 
-if (popupDetected()) {
-	pp_more_custom.onclick = () => browser.runtime.openOptionsPage();
-} else {
-	op_tabbar_color.oninput = () => {
-		browser.storage.local.set({ tabbar_color: Number(op_tabbar_color.value) });
-	};
-	op_toolbar_color.oninput = () => {
-		browser.storage.local.set({ toolbar_color: Number(op_toolbar_color.value) });
-	};
-	op_popup_color.oninput = () => {
-		browser.storage.local.set({ popup_color: Number(op_popup_color.value) });
-	};
-	op_separator_opacity.oninput = () => {
-		browser.storage.local.set({ separator_opacity: Number(op_separator_opacity.value) })
-	}
-	op_more_custom.onclick = () => {
-		browser.storage.local.set({ custom: op_more_custom.checked });
-		op_custom_options.hidden = !op_more_custom.checked;
-	};
-	op_light_color.onchange = () => browser.storage.local.set({ light_color: op_light_color.value });
-	op_dark_color.onchange = () => browser.storage.local.set({ dark_color: op_dark_color.value });
-	op_reset_light.onclick = () => browser.storage.local.set({ light_color: "#FFFFFF" }).then(load);
-	op_reset_dark.onclick = () => browser.storage.local.set({ dark_color: "#2B2A33" }).then(load);
-	op_reset_all.onclick = () => browser.storage.local.set({ reservedColor_cs: default_reservedColor_cs }).then(load);
-	op_add.onclick = () => {
-		let i = 0;
-		while (document.getElementById(`DOM_${i}`) != null) i++; //finds an unoccupied index
-		let new_row = op_custom_options_table.insertRow(op_custom_options_table.rows.length);
-		new_row.innerHTML = generateNewRow("", i);
-		addAction(i);
-		autoSaveSettings();
-	};
-}
 
 /**
  * Reads lookup table and stores data in storage.
  */
-function autoSaveSettings() {
+/* function autoSaveSettings() {
 	let pending_reservedColor_cs = {};
 	let all_table_rows = op_custom_options_table.firstElementChild.children;
 	for (let i = 2; i < all_table_rows.length; i++) {
@@ -296,7 +263,7 @@ function autoSaveSettings() {
 		}
 	}
 	browser.storage.local.set({ reservedColor_cs: pending_reservedColor_cs });
-}
+} */
 
 /**
  * Reads settings for a domain, generates new HTML elements and gives them id-s.
@@ -307,7 +274,7 @@ function autoSaveSettings() {
  * @param {*} i Special numbering of the elements.
  * @returns 
  */
-function generateNewRow(domain, i) {
+/* function generateNewRow(domain, i) {
 	let action = "#ECECEC"; //default action for new settings row
 	if (action == null) return null;
 	domain == "" ? domain = "example.com" : action = pref_reservedColor_cs[domain];
@@ -334,26 +301,26 @@ function generateNewRow(domain, i) {
 		part_3 = `<input type="color" class="FiveEm" value="${action}">`;
 	}
 	return `<td class="TenEm">${part_1}</td><td>${part_2}</td><td id="OPE_${i}">${part_3}</td><td>${part_4}</td>`;
-}
+} */
 
 /**
  * Triggers color update
  */
-function applySettings() {
+/* function applySettings() {
 	browser.runtime.sendMessage("UPDATE_REQUEST");
-}
+} */
 
 /**
  * Updates color of option page or popup
  */
-function autoPageColor() {
+/* function autoPageColor() {
 	popupDetected() ? autoPopupColor() : autoOptionsColor();
-}
+} */
 
 /**
  * Updates popup's color depends on tab bar color.
  */
-function autoPopupColor() {
+/* function autoPopupColor() {
 	//Sets text in info box
 	browser.tabs.query({ active: true, currentWindow: true }, tabs => {
 		let url = tabs[0].url;
@@ -386,12 +353,12 @@ function autoPopupColor() {
 		force_mode_caption.innerHTML = "Allow light tab bar";
 		force_mode_caption.parentElement.title = "Allow tab bar to turn bright";
 	}
-}
+} */
 
 /**
  * Updates option page's color depends on color scheme.
  */
-function autoOptionsColor() {
+/* function autoOptionsColor() {
 	if (pref_scheme == "light" || (pref_scheme == "system" && lightModeDetected())) {
 		body.classList.add("light");
 		body.classList.remove("dark");
@@ -403,31 +370,31 @@ function autoOptionsColor() {
 		force_mode_caption.innerHTML = "Allow light tab bar";
 		force_mode_caption.parentElement.title = "Allow tab bar to turn bright";
 	}
-}
+} */
 
 /**
  * @returns true if the script is run by the popup
  */
-function popupDetected() {
+/* function popupDetected() {
 	return document.getElementById("more_custom") == null;
 }
 
 const light_mode_match_media = window.matchMedia("(prefers-color-scheme: light)");
 if (light_mode_match_media != null) light_mode_match_media.onchange = () => {
 	if (color_scheme_system.checked) autoOptionsColor();
-};
+}; */
 
 /**
  * @returns true if in light mode, false if in dark mode or cannot detect
  */
-function lightModeDetected() {
+/* function lightModeDetected() {
 	return light_mode_match_media != null && light_mode_match_media.matches;
-}
+} */
 
 /**
  * @returns true if Firefox 95.0 or later.
  */
-function firefoxAboveV95() {
+/* function firefoxAboveV95() {
 	let str = navigator.userAgent;
 	let ind = str.lastIndexOf("Firefox");
 	if (ind != -1) {
@@ -436,4 +403,4 @@ function firefoxAboveV95() {
 	} else {
 		return true; //default answer
 	}
-}
+} */
