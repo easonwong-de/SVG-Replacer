@@ -1,7 +1,7 @@
 body {
 	margin: 0;
 	padding-top: 5em;
-	padding-inline: 25%;
+	padding-inline: min(calc(40vw - 20em), 25vw);
 	user-select: none;
 	align-content: center;
 	font-family: monospace;
@@ -29,7 +29,6 @@ body {
 
 div {
 	width: 100%;
-	overflow: hidden;
 	white-space: nowrap;
 }
 
@@ -67,8 +66,7 @@ td {
 	padding: 1vw;
 }
 
-#save_svg,
-#delete_svg {
+.button {
 	border-radius: 1vw;
 	padding: 0.5vw;
 	text-align: center;
@@ -99,8 +97,7 @@ td,
 
 button,
 select,
-#save_svg,
-#delete_svg {
+.button {
 	color: rgb(255, 255, 255);
 	background-color: rgba(255, 255, 255, 0.2);
 }
@@ -117,8 +114,7 @@ select,
 #svg_table td:hover,
 button:hover,
 select:hover,
-#save_svg:hover,
-#delete_svg:hover {
+.button:hover {
 	color: rgb(255, 255, 255);
 	background-color: rgba(255, 255, 255, 0.3);
 }
@@ -131,8 +127,7 @@ select:hover,
 #svg_table td:active,
 button:active,
 select:active,
-#save_svg:active,
-#delete_svg:active {
+.button:active {
 	color: rgb(255, 255, 255);
 	background-color: rgba(255, 255, 255, 0.4);
 }

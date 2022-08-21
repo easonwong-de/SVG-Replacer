@@ -13,6 +13,8 @@ let original_text = document.getElementById("original_text");
 let target_text = document.getElementById("target_text");
 let save_svg = document.getElementById("save_svg");
 let delete_svg = document.getElementById("delete_svg");
+let import_button = document.getElementById("import");
+let export_button = document.getElementById("export");
 
 browser.storage.onChanged.addListener(load);
 

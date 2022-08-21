@@ -2,7 +2,6 @@ var obs = new MutationObserver(update);
 obs.observe(document.body, { childList: true, subtree: true, attributes: false, characterData: false });
 
 function update() {
-	console.log("GOGOGO");
 	browser.storage.local.get(pref => {
 		let SVGReplacement = pref[document.domain];
 		if (SVGReplacement) {

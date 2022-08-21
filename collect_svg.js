@@ -5,10 +5,12 @@ for (let SVGElement of SVGCollection) {
     if (SVGElement.firstChild.nodeName != "defs") {
         if (SVGElement.firstChild.nodeName === "g") {
             for (let SVGGroup of SVGElement.children) {
-                SVGContentCollection[SVGGroup.innerHTML] = "null";
+                if (!SVGGroup.getAttribute("SVG-Replacer"))
+                    SVGContentCollection[SVGGroup.innerHTML] = "null";
             }
         } else {
-            SVGContentCollection[SVGElement.innerHTML] = "null";
+            if (!SVGElement.getAttribute("SVG-Replacer"))
+                SVGContentCollection[SVGElement.innerHTML] = "null";
         }
     }
 }

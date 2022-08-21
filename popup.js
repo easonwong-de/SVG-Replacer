@@ -16,7 +16,10 @@ let collect_SVG = document.getElementById("collect_SVG");
 let block_info = document.getElementById("block_info");
 let open_settings = document.getElementById("open_settings");
 
-open_settings.onclick = () => browser.runtime.openOptionsPage();
+open_settings.onclick = () => {
+	browser.runtime.openOptionsPage();
+	window.close();
+}
 
 browser.tabs.query({ active: true, currentWindow: true }, tabs => {
 	let url = tabs[0].url;
@@ -49,6 +52,6 @@ function storeSVG(url, SVGContentCollection) {
 			if (pref_cache_domain[SVGContent] == null) pref_cache_domain[SVGContent] = "null";
 		}
 		pref[domain] = pref_cache_domain;
-		browser.storage.local.set(pref);
+		browser.storage.local.set(pref).then(() => window.close());
 	});
 }
