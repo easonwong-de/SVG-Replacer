@@ -1,6 +1,6 @@
 body {
 	margin: 0;
-	padding-block: 5em;
+	padding-top: 5em;
 	padding-inline: 25%;
 	user-select: none;
 	align-content: center;
@@ -47,6 +47,7 @@ label {
 
 table {
 	width: 50%;
+	height: auto;
 	display: inline-block;
 	margin-block: 2em;
 	table-layout: fixed;
@@ -57,19 +58,20 @@ table {
 td {
 	overflow: hidden;
 	vertical-align: middle;
+	aspect-ratio: 1/1;
 }
 
 #svg_table td {
 	width: 12.5%;
-	aspect-ratio: 1/1;
-	border-radius: 10px;
-	padding: 10px;
+	border-radius: 0.5vw;
+	padding: 0.5vw;
 }
 
-#editor td {
+.big_display td,
+.editor td {
 	width: 50%;
-	border-radius: 20px;
-	padding: 20px;
+	border-radius: 1vw;
+	padding: 1vw;
 }
 
 button {
@@ -98,6 +100,11 @@ select {
 .dark select {
 	color: rgb(255, 255, 255);
 	background-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark .editor_title td{
+	background-color: transparent !important;
+	text-align: center;
 }
 
 .dark #svg_table td:hover,

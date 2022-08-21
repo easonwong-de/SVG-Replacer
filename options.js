@@ -13,6 +13,14 @@ let target_text = document.getElementById("target_text");
 
 browser.storage.onChanged.addListener(load_domains);
 
+delete_domain.onclick = () => {
+	delete pref_cache[selectedDomain()];
+	browser.storage.local.clear();
+	browser.storage.local.set(pref_cache).then(load_domains);
+}
+
+domain_selector.onchange = load_SVGs;
+
 function load_domains() {
 	browser.storage.local.get(pref => {
 		pref_cache = pref;
@@ -41,7 +49,6 @@ function load_SVGs() {
 	for (let SVGContent in pref_cache[selectedDomain()]) {
 		let current_cell = current_row.insertCell();
 		current_cell.innerHTML = `<svg>${SVGContent}</svg>`;
-		current_cell.height = current_cell.width;
 		current_cell.onclick = () => loadSVGToEditor(SVGContent);
 		if (i++ == 7) {
 			i = 0;
@@ -64,14 +71,6 @@ function loadSVGToEditor(SVGContent) {
 	original_text.value = SVGContent;
 	autoScaleSVG(original_svg.firstChild);
 }
-
-delete_domain.onclick = () => {
-	delete pref_cache[selectedDomain()];
-	browser.storage.local.clear();
-	browser.storage.local.set(pref_cache).then(load_domains);
-}
-
-domain_selector.onchange = load_SVGs;
 
 function autoScaleAllSVG() {
 	let SVGCollection = document.getElementsByTagName("svg");
@@ -96,12 +95,25 @@ function autoScaleSVG(SVG) {
 			console.error("Can't get " + el.nodeName + "'s dimension");
 		}
 		return dimension;
-	}, {});
+	}, {
+		xMin: 0,
+		xMax: 0,
+		yMin: 0,
+		yMax: 0
+	});
+	let x = xMin;
+	let y = yMin;
 	let width = xMax - xMin;
 	let height = yMax - yMin;
-	width > height ? height = width : width = height;
+	if (width > height) {
+		y = y - (width - height) / 2;
+		height = width;
+	} else {
+		x = x - (height - width) / 2;
+		width = height;
+	}
 	if (width === 0) width = height = 1;
-	const viewbox = `${xMin} ${yMin} ${width} ${height}`;
+	const viewbox = `${x} ${y} ${width} ${height}`;
 	SVG.setAttribute('viewBox', viewbox);
 }
 

@@ -14,6 +14,9 @@ pref = {
 
 let collect_SVG = document.getElementById("collect_SVG");
 let block_info = document.getElementById("block_info");
+let open_settings = document.getElementById("open_settings");
+
+open_settings.onclick = () => browser.runtime.openOptionsPage();
 
 browser.tabs.query({ active: true, currentWindow: true }, tabs => {
 	let url = tabs[0].url;
