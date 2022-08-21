@@ -1,10 +1,14 @@
+var pref_cache = {};
+
 let loading = document.getElementById("loading");
 let main = document.getElementById("main");
 let domain_selector = document.getElementById("domain_selector");
+let delete_domain = document.getElementById("delete_domain");
 let svg_table = document.getElementById("svg_table");
 
 function load_domains() {
 	browser.storage.local.get(pref => {
+		pref_cache = pref;
 		domain_selector.innerHTML = null;
 		let domains = Object.keys(pref);
 		domains.forEach(domain => {
@@ -13,6 +17,13 @@ function load_domains() {
 			domain_selector.add(option);
 		})
 	});
+}
+
+delete_domain.onclick = () => {
+	delete pref_cache[domain_selector.options[domain_selector.selectedIndex].text];
+	console.log(pref_cache);
+	browser.storage.local.clear();
+	browser.storage.local.set(pref_cache).then(load_domains);
 }
 
 load_domains();
