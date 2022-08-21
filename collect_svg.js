@@ -1,6 +1,10 @@
 SVGCollection = document.getElementsByTagName("svg");
 SVGContentCollection = {};
 for (let SVGElement of SVGCollection) {
-    SVGContentCollection[SVGElement.innerHTML] = "";
+    if (SVGElement.firstChild.nodeName === "defs") {
+        SVGContentCollection[SVGElement.firstChild.innerHTML] = "";
+    } else {
+        SVGContentCollection[SVGElement.innerHTML] = "";
+    }
 }
 SVGContentCollection;

@@ -1,6 +1,5 @@
 /* 
 Data structure:
-
 pref = {
 	"www.youtube.com": { //pref_domain
 		//innerHTML of svg tag (SVGContent)
@@ -40,14 +39,13 @@ browser.tabs.query({ active: true, currentWindow: true }, tabs => {
  * @param {object} SVGContentCollection 
  */
 function storeSVG(url, SVGContentCollection) {
-	let pref_domain = {};
-	let domain = url.split(/\/|\?/)[2];
 	browser.storage.local.get(pref => {
-		pref[domain] = pref_domain;
-		console.log(pref[domain]);
+		let domain = url.split(/\/|\?/)[2];
+		let pref_domain = Object.assign({}, pref[domain]);
 		for (let SVGContent in SVGContentCollection) {
 			if (!pref_domain[SVGContent]) pref_domain[SVGContent] = "";
 		}
+		pref[domain] = pref_domain;
 		browser.storage.local.set(pref);
 	});
 }

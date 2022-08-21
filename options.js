@@ -1,29 +1,108 @@
 var pref_cache = {};
+var option_cache = "";
 
 let loading = document.getElementById("loading");
 let main = document.getElementById("main");
 let domain_selector = document.getElementById("domain_selector");
 let delete_domain = document.getElementById("delete_domain");
 let svg_table = document.getElementById("svg_table");
+let original_svg = document.getElementById("original_svg");
+let target_svg = document.getElementById("target_svg");
+let original_text = document.getElementById("original_text");
+let target_text = document.getElementById("target_text");
+
+browser.storage.onChanged.addListener(load_domains);
 
 function load_domains() {
 	browser.storage.local.get(pref => {
 		pref_cache = pref;
+		if (domain_selector.options.length) option_cache = selectedDomain();
 		domain_selector.innerHTML = null;
 		let domains = Object.keys(pref);
 		domains.forEach(domain => {
 			let option = document.createElement("option");
 			option.text = domain;
 			domain_selector.add(option);
-		})
+		});
+		for (let i = 0; i < domain_selector.options.length; i++) {
+			if (domain_selector.options[i].text === option_cache) {
+				domain_selector.selectedIndex = i;
+				break;
+			}
+		}
+		load_SVGs();
 	});
 }
 
+function load_SVGs() {
+	clear_SVGs();
+	let i = 0;
+	let current_row = svg_table.insertRow();
+	for (let SVGContent in pref_cache[selectedDomain()]) {
+		let current_cell = current_row.insertCell();
+		current_cell.innerHTML = `<svg>${SVGContent}</svg>`;
+		current_cell.height = current_cell.width;
+		current_cell.onclick = () => loadSVGToEditor(SVGContent);
+		if (i++ == 7) {
+			i = 0;
+			current_row = svg_table.insertRow();
+		}
+	}
+	autoScaleAllSVG();
+}
+
+function clear_SVGs() {
+	svg_table.innerHTML = "";
+}
+
+function selectedDomain() {
+	return domain_selector.options[domain_selector.selectedIndex].text;
+}
+
+function loadSVGToEditor(SVGContent) {
+	original_svg.innerHTML = `<svg>${SVGContent}</svg>`;
+	original_text.value = SVGContent;
+	autoScaleSVG(original_svg.firstChild);
+}
+
 delete_domain.onclick = () => {
-	delete pref_cache[domain_selector.options[domain_selector.selectedIndex].text];
-	console.log(pref_cache);
+	delete pref_cache[selectedDomain()];
 	browser.storage.local.clear();
 	browser.storage.local.set(pref_cache).then(load_domains);
+}
+
+domain_selector.onchange = load_SVGs;
+
+function autoScaleAllSVG() {
+	let SVGCollection = document.getElementsByTagName("svg");
+	for (let SVGElement of SVGCollection) {
+		autoScaleSVG(SVGElement);
+	}
+}
+
+/**
+ * @author Nick Scialli
+ * @param {SVGElement} SVG 
+ */
+function autoScaleSVG(SVG) {
+	const { xMin, xMax, yMin, yMax } = [...SVG.children].reduce((dimension, el) => {
+		try {
+			const { x, y, width, height } = el.getBBox();
+			if (!dimension.xMin || x < dimension.xMin) dimension.xMin = x;
+			if (!dimension.xMax || x + width > dimension.xMax) dimension.xMax = x + width;
+			if (!dimension.yMin || y < dimension.yMin) dimension.yMin = y;
+			if (!dimension.yMax || y + height > dimension.yMax) dimension.yMax = y + height;
+		} catch (error) {
+			console.error("Can't get " + el.nodeName + "'s dimension");
+		}
+		return dimension;
+	}, {});
+	let width = xMax - xMin;
+	let height = yMax - yMin;
+	width > height ? height = width : width = height;
+	if (width === 0) width = height = 1;
+	const viewbox = `${xMin} ${yMin} ${width} ${height}`;
+	SVG.setAttribute('viewBox', viewbox);
 }
 
 load_domains();

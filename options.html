@@ -11,21 +11,21 @@
 		<h4>Loading…</h4>
 	</div>
 	<div id="main">
-		<div style="padding: 0.5em;">
+		<div>
 			<label for="domain_selector">Select a domain</label>
 			<select id="domain_selector"></select>
 			<button id="delete_domain">Delete</button>
 		</div>
 		<div>
-			<table id="svg_table">
+			<table id="svg_table"></table>
+			<table id="editor">
 				<tr>
-					<td>ETWAS</td>
-					<td></td>
+					<td id="original_svg"></td>
+					<td id="target_svg"></td>
 				</tr>
 				<tr>
-					<td></td>
-					<td>SOMETHING</td>
-					<td></td>
+					<td><textarea id="original_text" cols="30" rows="10"></textarea></td>
+					<td><textarea id="target_text" cols="30" rows="10"></textarea></td>
 				</tr>
 			</table>
 		</div>
