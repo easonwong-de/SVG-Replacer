@@ -7,16 +7,29 @@
 </head>
 
 <body class="dark">
-	<div id="loading">
+	<div id="loading" hidden="true">
 		<h4>Loading…</h4>
-		<h1>&nbsp;</h1>
-		<h1>&nbsp;</h1>
-		<h1>&nbsp;</h1>
-		<h1>&nbsp;</h1>
-		<h1>&nbsp;</h1>
 	</div>
-	<div id="settings" hidden="true">
+	<div id="main">
+		<div style="padding: 0.5em;">
+			<label for="domain_selector">Select a domain</label>
+			<select id="domain_selector"></select>
+			<button>Delete</button>
+		</div>
 		<div>
+			<table id="svg_table">
+				<tr>
+					<td>ETWAS</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>SOMETHING</td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+		<!-- <div>
 			<h4>
 				<input id="color_scheme_no_dark" type="radio" />
 				<label for="color_scheme_no_dark" title="Use light color scheme for browser">Prefer Light Mode</label>
@@ -62,7 +75,7 @@
 				<label for="more_custom">Set color for specific domains</label>
 			</h4>
 		</div>
-		<div id="custom_options" hidden="true">
+		<div id="custom_options">
 			<table id="custom_options_table">
 				<tr>
 					<td class="TenEm"><span>about:home light</span></td>
@@ -129,13 +142,13 @@
 		<div>
 			<p><a href="https://github.com/YS-Wong/Adaptive-Tab-Bar-Color/issues">Report an issue / submit a
 					suggestion</a></p>
-		</div>
-		<form action="https://www.paypal.com/donate" method="post" target="_blank">
+		</div> -->
+		<!-- <form action="https://www.paypal.com/donate" method="post" target="_blank">
 			<input type="hidden" name="hosted_button_id" value="T5GL8WC7SVLLC" />
 			<input type="image" src="https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif" border="0"
 				name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
 			<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
-		</form>
+		</form> -->
 	</div>
 	<p>&nbsp;</p>
 	<script type="text/javascript" src="../options.js"></script>

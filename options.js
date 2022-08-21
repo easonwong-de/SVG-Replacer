@@ -1,3 +1,22 @@
+let loading = document.getElementById("loading");
+let main = document.getElementById("main");
+let domain_selector = document.getElementById("domain_selector");
+let svg_table = document.getElementById("svg_table");
+
+function load_domains() {
+	browser.storage.local.get(pref => {
+		domain_selector.innerHTML = null;
+		let domains = Object.keys(pref);
+		domains.forEach(domain => {
+			let option = document.createElement("option");
+			option.text = domain;
+			domain_selector.add(option);
+		})
+	});
+}
+
+load_domains();
+
 /* //This script is shared by option page and popup
 
 const default_reservedColor_cs = Object.freeze({
@@ -177,7 +196,7 @@ color_scheme_system.addEventListener("input", () => {
  */
 /**
  * Sets the color scheme, and updates appearance of option page.
- * 
+ *
  * @param {*} pending_scheme the name of the scheme to change to.
  */
 /* function changeColorScheme(pending_scheme) {

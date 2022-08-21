@@ -57,7 +57,7 @@ label {
 }
 
 p {
-	margin-block-end: 5px;
+	/* margin-block-end: 5px; */
 	line-height: 1.2em;
 }
 

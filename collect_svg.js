@@ -1,5 +1,5 @@
-const SVGCollection = document.getElementsByTagName("svg");
-const SVGContentCollection = {};
+SVGCollection = document.getElementsByTagName("svg");
+SVGContentCollection = {};
 for (let SVGElement of SVGCollection) {
     SVGContentCollection[SVGElement.innerHTML] = "";
 }
