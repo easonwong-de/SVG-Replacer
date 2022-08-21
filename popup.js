@@ -3,7 +3,7 @@ Data structure:
 pref = {
 	"www.youtube.com": { //pref_domain
 		//innerHTML of svg tag (SVGContent)
-		"<path>...</path>": "<path>...</path>",
+		"<path>...</path>": "null",
 		"<path>...</path>": "<path>...</path>"
 	},
 	"www.example.com": {
@@ -44,11 +44,11 @@ browser.tabs.query({ active: true, currentWindow: true }, tabs => {
 function storeSVG(url, SVGContentCollection) {
 	browser.storage.local.get(pref => {
 		let domain = url.split(/\/|\?/)[2];
-		let pref_domain = Object.assign({}, pref[domain]);
+		let pref_cache_domain = Object.assign({}, pref[domain]);
 		for (let SVGContent in SVGContentCollection) {
-			if (!pref_domain[SVGContent]) pref_domain[SVGContent] = "";
+			if (pref_cache_domain[SVGContent] == null) pref_cache_domain[SVGContent] = "null";
 		}
-		pref[domain] = pref_domain;
+		pref[domain] = pref_cache_domain;
 		browser.storage.local.set(pref);
 	});
 }

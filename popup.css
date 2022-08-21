@@ -2,16 +2,8 @@ body {
 	width: 20em !important;
 	margin: 0;
 	padding: 8px;
-}
-
-.light {
-	color: rgb(0, 0, 0);
-	background-color: rgb(255, 255, 255);
-}
-
-.dark {
 	color: rgb(255, 255, 255);
-	background-color: rgb(28, 27, 34);
+	background-color: rgb(50, 50, 50);
 }
 
 p,
@@ -23,73 +15,16 @@ label {
 	border-radius: 4px;
 }
 
-.light label:hover {
-	background-color: rgba(0, 0, 0, 0.15);
-}
-
-.light label:active {
-	background-color: rgba(0, 0, 0, 0.26);
-}
-
-.dark label:hover {
-	background-color: rgba(255, 255, 255, 0.15);
-}
-
-.dark label:active {
-	background-color: rgba(255, 255, 255, 0.26);
-}
-
-.tip {
-	display: inline-block;
-	vertical-align: middle;
-	font-size: 50%;
-	padding-inline: 1em;
-	margin: 0;
-	border-radius: 5px;
-}
-
-.light .tip{
-	background-color: rgba(0, 0, 0, 0.13);
-}
-
-.dark .tip{
-	background-color: rgba(255, 255, 255, 0.10);
-}
-
 p {
 	margin-block-end: 5px;
 	line-height: 1.2em;
-}
-
-.light p {
-	border: 1px solid rgba(0, 0, 0, 0.13);
-}
-
-.dark p {
 	border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
-hr {
-	height: 1px;
-	border-width: 0;
+label:hover {
+	background-color: rgba(255, 255, 255, 0.15);
 }
 
-.light hr {
-	color: rgba(0, 0, 0, 0.13);
-	background-color: rgba(0, 0, 0, 0.13)
-}
-
-.dark hr {
-	color: rgba(255, 255, 255, 0.10);
-	background-color: rgba(255, 255, 255, 0.10)
-}
-
-.light input {
-	accent-color: rgb(0, 0, 0);
-	opacity: 0.75;
-}
-
-.dark input {
-	accent-color: rgb(255, 255, 255);
-	opacity: 0.75;
+label:active {
+	background-color: rgba(255, 255, 255, 0.26);
 }

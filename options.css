@@ -5,6 +5,8 @@ body {
 	user-select: none;
 	align-content: center;
 	font-family: monospace;
+	color: rgb(255, 255, 255);
+	background-color: rgb(50, 50, 50);
 }
 
 #loading,
@@ -25,18 +27,9 @@ body {
 		0px 0px 70px rgba(0, 0, 0, 0.06);
 }
 
-.light {
-	color: rgb(0, 0, 0);
-	background-color: rgb(255, 255, 255);
-}
-
-.dark {
-	color: rgb(255, 255, 255);
-	background-color: rgb(50, 50, 50);
-}
-
 div {
 	width: 100%;
+	overflow: hidden;
 	white-space: nowrap;
 }
 
@@ -74,6 +67,13 @@ td {
 	padding: 1vw;
 }
 
+#save_svg,
+#delete_svg {
+	border-radius: 1vw;
+	padding: 0.5vw;
+	text-align: center;
+}
+
 button {
 	padding-inline: 2em;
 }
@@ -95,30 +95,56 @@ select {
 	font-family: monospace;
 }
 
-.dark td,
-.dark button,
-.dark select {
+td,
+
+button,
+select,
+#save_svg,
+#delete_svg {
 	color: rgb(255, 255, 255);
 	background-color: rgba(255, 255, 255, 0.2);
 }
 
-.dark .editor_title td{
-	background-color: transparent !important;
-	text-align: center;
+#svg_table td.selected {
+	outline: 2px solid white;
+	background-color: rgba(255, 255, 255, 0.4);
 }
 
-.dark #svg_table td:hover,
-.dark button:hover,
-.dark select:hover {
+#svg_table td.edited {
+	border: 1px solid aquamarine;
+}
+
+#svg_table td:hover,
+button:hover,
+select:hover,
+#save_svg:hover,
+#delete_svg:hover {
 	color: rgb(255, 255, 255);
 	background-color: rgba(255, 255, 255, 0.3);
 }
 
-.dark #svg_table td:active,
-.dark button:active,
-.dark select:active {
+#svg_table td:hover.selected {
+	outline: 2px solid white;
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+#svg_table td:active,
+button:active,
+select:active,
+#save_svg:active,
+#delete_svg:active {
 	color: rgb(255, 255, 255);
 	background-color: rgba(255, 255, 255, 0.4);
+}
+
+#svg_table td:active.selected {
+	outline: 2px solid white;
+	background-color: rgba(255, 255, 255, 0.6);
+}
+
+.transparent {
+	background-color: transparent !important;
+	text-align: center;
 }
 
 svg {
@@ -139,104 +165,4 @@ textarea {
 	white-space: normal;
 	color: inherit;
 	resize: none;
-}
-
-.light a:link,
-.light a:visited {
-	color: rgb(55, 141, 255);
-	text-decoration: none;
-}
-
-.light a:hover {
-	color: rgb(46, 96, 223);
-	text-decoration: underline;
-}
-
-.light a:active {
-	color: rgb(19, 34, 117);
-	text-decoration: underline;
-}
-
-.dark a:link,
-.dark a:visited {
-	color: rgb(59, 221, 255);
-	text-decoration: none;
-}
-
-.dark a:hover {
-	color: rgb(128, 235, 255);
-	text-decoration: underline;
-}
-
-.dark a:active {
-	color: rgb(169, 242, 255);
-	text-decoration: underline;
-}
-
-hr {
-	height: 1px;
-	border-width: 0;
-}
-
-.light hr {
-	background-color: rgb(215, 215, 219);
-}
-
-.dark hr {
-	background-color: rgb(78, 77, 84);
-}
-
-.FiveEm {
-	width: 5em !important;
-	display: inline-block;
-}
-
-.TenEm {
-	width: 10em !important;
-	display: inline-block;
-}
-
-input[type='range'] {
-	margin-inline: 1em;
-	width: 6em;
-}
-
-input[type='color'] {
-	padding: 0;
-	border: none;
-	height: 1.5em;
-	vertical-align: middle;
-	cursor: pointer;
-}
-
-input[type='text'] {
-	height: 1.75em;
-	padding-inline: 0.25em;
-	vertical-align: middle;
-	outline: none;
-	border-radius: 4px;
-	background-color: inherit;
-	color: inherit;
-	display: inline-block;
-	width: 100%;
-}
-
-.light input[type='text'] {
-	border: solid 1px rgb(215, 215, 219);
-}
-
-.dark input[type='text'] {
-	border: solid 1px rgb(78, 77, 84);
-}
-
-.light input[type='checkbox'],
-.light input[type='radio'],
-.light input[type='range'] {
-	accent-color: rgb(34, 100, 216);
-}
-
-.dark input[type='checkbox'],
-.dark input[type='radio'],
-.dark input[type='range'] {
-	accent-color: rgb(98, 218, 251);
 }
