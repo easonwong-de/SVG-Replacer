@@ -1,7 +1,7 @@
 {
   "name": "SVG Replacer",
   "version": "0.1",
-  "description": "Replaces SVG with custom ones on websites",
+  "description": "Replaces SVGs with custom ones on websites",
   "author": "Eason Wong",
   "browser_specific_settings": {
     "gecko": {

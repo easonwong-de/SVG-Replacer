@@ -1,14 +1,14 @@
 ![Icon](https://raw.githubusercontent.com/YS-Wong/SVG-Replacer/main/images/SVGR_128.png)
 # SVG Replacer
-Replaces SVG with custom ones on websites  
+Replaces SVGs with custom ones on websites  
 <!-- <br>
-**[![Get it for Firefox!](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/adaptive-tab-bar-color/?utm_source=github.com&utm_medium=git&utm_content=download-button&campaign=github)**  
+**[![Get it for Firefox!](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/adaptive-tab-bar-color/?utm_source=github.com&utm_medium=git&utm_content=download-button&campaign=github)**   -->
 <br>
 
 ## What Does The Add-on Do
-Every time you switch tabs, this add-on changes the tab bar color of your Firefox browser to match the theme color of the website you are viewing – just like how macOS Safari tints its tab bar.  
+This add-on can collect SVGs (Scalable Vector Graphics, often used as symbols and icons) on websites and provide provide an easy way to replace them. 
 
-<img src="https://addons.mozilla.org/user-media/previews/full/272/272045.png" width="600">
+<!-- <img src="https://addons.mozilla.org/user-media/previews/full/272/272045.png" width="600">
 
 <img src="https://addons.mozilla.org/user-media/previews/full/272/272046.png" width="600">
 
