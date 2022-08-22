@@ -13,7 +13,6 @@ let original_text = document.getElementById("original_text");
 let target_text = document.getElementById("target_text");
 let save_svg = document.getElementById("save_svg");
 let delete_svg = document.getElementById("delete_svg");
-let import_button = document.getElementById("import");
 let export_button = document.getElementById("export");
 
 browser.storage.onChanged.addListener(load);
@@ -52,6 +51,19 @@ delete_svg.onclick = () => {
 		selectedSVG().classList.remove("edited");
 		browser.storage.local.set(pref_cache);
 	}
+}
+
+export_button.onclick = () => {
+	browser.storage.local.get(pref => {
+		let export_pref = pref;
+		for (let domain in export_pref) {
+			for (let oldSVG in export_pref[domain]) {
+				if (export_pref[domain][oldSVG] == "null")
+					delete export_pref[domain][oldSVG];
+			}
+		}
+		download(JSON.stringify(export_pref, null, 2), "SVG-Replacer_pref.json", "application/json");
+	});
 }
 
 function load() {
@@ -134,14 +146,14 @@ function loadSVGToEditor(originalSVG) {
 		target_svg.innerHTML = `<svg>${replacementSVG}</svg>`;
 		target_text.value = replacementSVG;
 	}
-	autoScaleSVG(original_svg.firstChild);
-	autoScaleSVG(target_svg.firstChild);
+	autoScaleSVGInSquare(original_svg.firstChild);
+	autoScaleSVGInSquare(target_svg.firstChild);
 }
 
 function autoScaleAllSVG() {
 	let SVGCollection = document.getElementsByTagName("svg");
 	for (let SVGElement of SVGCollection) {
-		autoScaleSVG(SVGElement);
+		autoScaleSVGInSquare(SVGElement);
 	}
 }
 
@@ -149,7 +161,7 @@ function autoScaleAllSVG() {
  * @author Nick Scialli
  * @param {SVGElement} SVG 
  */
-function autoScaleSVG(SVG) {
+function autoScaleSVGInSquare(SVG) {
 	const { xMin, xMax, yMin, yMax } = [...SVG.children].reduce((dimension, el) => {
 		try {
 			const { x, y, width, height } = el.getBBox();
@@ -181,6 +193,27 @@ function autoScaleSVG(SVG) {
 	if (width === 0) width = height = 1;
 	const viewbox = `${x} ${y} ${width} ${height}`;
 	SVG.setAttribute('viewBox', viewbox);
+}
+
+/**
+ * @author Kanchu
+ */
+function download(data, filename, type) {
+	var file = new Blob([data], { type: type });
+	if (window.navigator.msSaveOrOpenBlob) // IE10+
+		window.navigator.msSaveOrOpenBlob(file, filename);
+	else { // Others
+		var a = document.createElement("a"),
+			url = URL.createObjectURL(file);
+		a.href = url;
+		a.download = filename;
+		document.body.appendChild(a);
+		a.click();
+		setTimeout(function () {
+			document.body.removeChild(a);
+			window.URL.revokeObjectURL(url);
+		}, 0);
+	}
 }
 
 load();

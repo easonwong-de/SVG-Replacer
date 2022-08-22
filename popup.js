@@ -24,7 +24,11 @@ open_settings.onclick = () => {
 browser.tabs.query({ active: true, currentWindow: true }, tabs => {
 	let url = tabs[0].url;
 	let id = tabs[0].id;
-	if (url.startsWith("http:") || url.startsWith("https:")) {
+	let title = tabs[0].title;
+	if (url.startsWith("http:")
+		|| url.startsWith("https:")
+		|| (url.startsWith("file:") && !(url.endsWith(".pdf") || title.endsWith(".pdf")))
+	) {
 		block_info.parentElement.hidden = true;
 		collect_SVG.parentElement.hidden = false;
 		collect_SVG.onclick = () => {

@@ -14,7 +14,7 @@
 	</div>
 	<div id="main">
 		<div>
-			<label for="domain_selector">Select a domain</label>
+			<label class="label">Select a domain</label>
 			<select id="domain_selector"></select>
 			<button id="delete_domain">Delete</button>
 		</div>
@@ -41,8 +41,11 @@
 					<td id="save_svg" class="button">Save replacement</td>
 				</tr>
 				<tr>
-					<td id="import" class="button">Import</td>
-					<td id="export" class="button">Export</td>
+					<td class="transparent">
+						<label for="import" class="button" style="display: inline-block; width: calc(100% - 1vw);">Import settings</label>
+						<input type="file" id="import" accept="application/json" style="display: none;">
+					</td>
+					<td id="export" class="button">Export settings</td>
 				</tr>
 			</table>
 		</div>

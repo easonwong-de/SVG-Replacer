@@ -32,7 +32,7 @@ div {
 	white-space: nowrap;
 }
 
-label {
+.label {
 	display: block;
 	padding-left: 0.5em;
 }
@@ -47,13 +47,10 @@ table {
 	border-spacing: 0.5em;
 }
 
-td {
+#svg_table td {
 	overflow: hidden;
 	vertical-align: middle;
 	aspect-ratio: 1/1;
-}
-
-#svg_table td {
 	width: 12.5%;
 	border-radius: 0.5vw;
 	padding: 0.5vw;
@@ -94,7 +91,6 @@ select {
 }
 
 td,
-
 button,
 select,
 .button {
