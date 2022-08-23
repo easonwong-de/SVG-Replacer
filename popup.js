@@ -33,7 +33,6 @@ browser.tabs.query({ active: true, currentWindow: true }, tabs => {
 		collect_SVG.parentElement.hidden = false;
 		collect_SVG.onclick = () => {
 			browser.tabs.executeScript(id, { file: "collect_SVG.js" }).then(paths => {
-				console.log(paths);
 				if (url.startsWith("http:") || url.startsWith("https:")) {
 					domain = url.split(/\/|\?/)[2];
 					storeSVG(domain, paths[0]);
