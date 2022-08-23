@@ -1,3 +1,4 @@
+console.log("COLLECT");
 SVGCollection = document.getElementsByTagName("svg");
 SVGContentCollection = {};
 

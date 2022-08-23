@@ -1,30 +1,53 @@
-function update() {
-	browser.storage.local.get(pref => {
-		let SVGReplacement = pref[document.domain];
-		if (SVGReplacement) updateSVGOnWebsite(SVGReplacement);
-	});
-}
+var pref_domain_cache = {};
+
+var mutationObs = new MutationObserver((mutaions) => {
+	let found_svg_mutation = false;
+	for (let mutation of mutaions) {
+		for (let addedNode of mutation.addedNodes) {
+			if (addedNode.nodeName === "svg") {
+				found_svg_mutation = true;
+				update();
+			}
+			if (found_svg_mutation) break;
+		}
+		if (found_svg_mutation) break;
+	}
+});
+
+browser.storage.local.get(pref => {
+	pref_domain_cache = pref[document.domain];
+	for (let oldSVGContent in pref_domain_cache) {
+		let newSVGContent = pref_domain_cache[oldSVGContent];
+		if (typeof newSVGContent === "string" && newSVGContent != "null") {
+			if (newSVGContent === "") newSVGContent = "<g></g>";
+		} else {
+			delete pref_domain_cache[oldSVGContent];
+		}
+	}
+	if (pref_domain_cache) {
+		update();
+		mutationObs.observe(document.body, { childList: true, subtree: true });
+	}
+});
+
 
 /**
  * Finds customized SVGs on the websites and replaces them.
- * @param {object} SVGReplacement Object containing SVG replacement rules
  */
-function updateSVGOnWebsite(SVGReplacement) {
+function update() {
+	console.log("UPDATE " + Date.now());
 	let SVGCollection = document.getElementsByTagName("svg");
-	for (let oldSVGContent in SVGReplacement) {
-		let newSVGContent = SVGReplacement[oldSVGContent];
-		if (newSVGContent != null && newSVGContent != "null") {
-			if (newSVGContent === "") newSVGContent = "<g></g>";
-			for (let SVGElement of SVGCollection) {
-				if (SVGElement.firstChild.nodeName === "g") {
-					for (let SVGGroup of SVGElement.children) {
-						if (!SVGGroup.getAttribute("SVG-Replacer") && SVGGroup.innerHTML === oldSVGContent)
-							replaceSVG(SVGElement, newSVGContent);
-					}
-				} else {
-					if (!SVGElement.getAttribute("SVG-Replacer") && SVGElement.innerHTML === oldSVGContent)
+	for (let oldSVGContent in pref_domain_cache) {
+		let newSVGContent = pref_domain_cache[oldSVGContent];
+		for (let SVGElement of SVGCollection) {
+			if (SVGElement.firstChild.nodeName === "g") {
+				for (let SVGGroup of SVGElement.children) {
+					if (!SVGGroup.getAttribute("SVG-Replacer") && SVGGroup.innerHTML === oldSVGContent)
 						replaceSVG(SVGElement, newSVGContent);
 				}
+			} else {
+				if (!SVGElement.getAttribute("SVG-Replacer") && SVGElement.innerHTML === oldSVGContent)
+					replaceSVG(SVGElement, newSVGContent);
 			}
 		}
 	}
@@ -45,7 +68,6 @@ function replaceSVG(SVGElement, newSVGContent) {
 	const width = (1 + marginL + marginR) * (xMax - xMin);
 	const height = (1 + marginT + marginB) * (yMax - yMin);
 	const viewbox = `${x} ${y} ${width} ${height}`;
-	console.log(viewbox);
 	SVGElement.setAttribute("viewBox", viewbox);
 }
 
@@ -91,7 +113,3 @@ function getSVGDimension(SVGElement) {
 		return dimension;
 	}, { xMin: 0, xMax: 0, yMin: 0, yMax: 0 });
 }
-
-var obs = new MutationObserver(update);
-obs.observe(document.body, { childList: true, subtree: true, attributes: false, characterData: false });
-update();

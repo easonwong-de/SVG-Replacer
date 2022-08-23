@@ -13,6 +13,7 @@ let original_text = document.getElementById("original_text");
 let target_text = document.getElementById("target_text");
 let save_svg = document.getElementById("save_svg");
 let delete_svg = document.getElementById("delete_svg");
+let import_button = document.getElementById("import");
 let export_button = document.getElementById("export");
 
 browser.storage.onChanged.addListener(load);
@@ -53,6 +54,19 @@ delete_svg.onclick = () => {
 	}
 }
 
+import_button.onchange = () => {
+	SVG_cache = { r: 0, c: 0 };
+	var fileReader = new FileReader();
+	fileReader.onload = () => {
+		let import_pref = JSON.parse(fileReader.result);
+		browser.storage.local.set(import_pref);
+		for (let domain in import_pref) {
+			if (typeof import_pref[domain] != "object") return false;
+		}
+	};
+	fileReader.readAsText(import_button.files[0]);
+}
+
 export_button.onclick = () => {
 	browser.storage.local.get(pref => {
 		let export_pref = pref;
@@ -91,9 +105,9 @@ function load() {
 
 function loadSVGs() {
 	clearSVGs();
-	let i = 0;
-	let current_row = svg_table.insertRow();
 	let domain = selectedDomain();
+	let cell_count = 0;
+	let current_row = svg_table.insertRow();
 	for (let SVGContent in pref_cache[domain]) {
 		let current_cell = current_row.insertCell();
 		if (pref_cache[domain][SVGContent] != "null") {
@@ -109,8 +123,8 @@ function loadSVGs() {
 			SVG_cache.r = current_cell.parentNode.rowIndex;
 			SVG_cache.c = current_cell.cellIndex;
 		};
-		if (i++ == 7) {
-			i = 0;
+		if (cell_count++ == 7) {
+			cell_count = 0;
 			current_row = svg_table.insertRow();
 		}
 	}
@@ -131,6 +145,7 @@ function clearSVGs() {
 function selectedDomain() {
 	return domain_selector.selectedIndex === -1 ? false : domain_selector.options[domain_selector.selectedIndex].text;
 }
+
 function selectedSVG() {
 	return document.getElementsByClassName("selected")[0];
 }
