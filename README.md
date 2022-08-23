@@ -1,6 +1,6 @@
 ![Icon](https://raw.githubusercontent.com/YS-Wong/SVG-Replacer/main/images/SVGR_128.png)
 # SVG Replacer
-Replaces SVGs with custom ones on websites  
+Replaces SVG paths with custom ones on websites  
 <!-- <br>
 **[![Get it for Firefox!](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/adaptive-tab-bar-color/?utm_source=github.com&utm_medium=git&utm_content=download-button&campaign=github)**   -->
 <br>
