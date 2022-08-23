@@ -2,7 +2,7 @@ SVGs = document.getElementsByTagName("svg");
 paths = {};
 
 for (let SVG of SVGs) {
-    if (SVG.getAttribute("SVG-Replacer")) break;
+    if (SVG.getAttribute("SVG-Replacer")) continue;
     getPaths(SVG);
 }
 
