@@ -35,7 +35,6 @@ browser.storage.local.get(pref => {
  * Finds customized SVGs on the websites and replaces them.
  */
 function update() {
-	console.log("UPDATE " + Date.now());
 	let SVGCollection = document.getElementsByTagName("svg");
 	for (let oldSVGContent in pref_domain_cache) {
 		let newSVGContent = pref_domain_cache[oldSVGContent];
@@ -73,8 +72,8 @@ function replaceSVG(SVGElement, newSVGContent) {
 
 /**
  * Gets the margins of an SVG.
- * @param {SVGElement} SVGElement SVG HTML element
- * @returns Margins on top, bottom, left and right sides in percentages propotional to SVG's size
+ * @param {SVGElement} SVGElement SVG HTML element.
+ * @returns Margins on top, bottom, left and right sides in percentages propotional to SVG's size.
  */
 function getSVGMargin(SVGElement) {
 	const temp = SVGElement.getAttribute("viewBox").split(" ");
@@ -94,22 +93,47 @@ function getSVGMargin(SVGElement) {
 }
 
 /**
- * Gets coordinates and size of an SVG.
+ * Gets boundary coordinates of an SVG.
  * @author Nick Scialli
- * @param {SVGElement} SVGElement SVG HTML element
- * @returns Smallest viewbox of te SVG
+ * @param {SVGElement} SVGElement SVG HTML element.
+ * @returns Boundary coordinates of the SVG.
  */
 function getSVGDimension(SVGElement) {
-	return { xMin, xMax, yMin, yMax } = [...SVGElement.children].reduce((dimension, el) => {
+	return { xMin, xMax, yMin, yMax } = [...SVGElement.children].reduce((dimension, svgg) => {
 		try {
-			const { x, y, width, height } = el.getBBox();
+			const { x, y, width, height } = getBetterBBox(svgg);
 			if (!dimension.xMin || x < dimension.xMin) dimension.xMin = x;
 			if (!dimension.xMax || x + width > dimension.xMax) dimension.xMax = x + width;
 			if (!dimension.yMin || y < dimension.yMin) dimension.yMin = y;
 			if (!dimension.yMax || y + height > dimension.yMax) dimension.yMax = y + height;
 		} catch (error) {
-			console.warn("Can't get " + el.nodeName + "'s dimension");
+			console.warn("Can't get " + svgg.nodeName + "'s dimension");
 		}
 		return dimension;
 	}, { xMin: 0, xMax: 0, yMin: 0, yMax: 0 });
+}
+
+/**
+ * Gets BBox of an SVG graphics element.
+ * @author Diego Mijelshon
+ * @param {SVGGraphicsElement} svgg SVG graphics element.
+ * @returns The BBox value of the SVG graphics element.
+ */
+function getBetterBBox(svgg) {
+	let bbox = svgg.getBBox();
+	if (bbox.width === 0 && bbox.height === 0) {
+		tempDiv = document.createElement("div");
+		tempDiv.setAttribute("style", "position:absolute; visibility:hidden; width:0; height:0");
+		if (svgg.tagName === "svg") {
+			tempSvg = svgg.cloneNode(true);
+		} else {
+			tempSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+			tempSvg.appendChild(svgg.cloneNode(true));
+		}
+		tempDiv.appendChild(tempSvg);
+		document.body.appendChild(tempDiv);
+		bbox = tempSvg.getBBox();
+		document.body.removeChild(tempDiv);
+	}
+	return bbox;
 }
