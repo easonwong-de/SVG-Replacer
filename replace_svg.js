@@ -37,9 +37,10 @@ function update() {
 		if ((SVG.firstChild && SVG.firstChild.nodeName === "defs")
 			|| SVG.getAttribute("SVG-Replacer")) continue;
 		const { marginT, marginB, marginL, marginR } = getSVGMargin(SVG);
+		let path_changed = false;
 		for (let oldPath in pref_domain_cache) {
 			let newPath = pref_domain_cache[oldPath];
-			replacePaths(newPath, oldPath, SVG);
+			path_changed = path_changed || replacePaths(newPath, oldPath, SVG);
 		}
 		const { xMin, xMax, yMin, yMax } = getSVGDimension(SVG);
 		const x = xMin - marginL * (xMax - xMin);
@@ -48,7 +49,7 @@ function update() {
 		const height = (1 + marginT + marginB) * (yMax - yMin);
 		const viewbox = `${x} ${y} ${width} ${height}`;
 		SVG.setAttribute("viewBox", viewbox);
-		SVG.setAttribute("SVG-Replacer", "true");
+		if (path_changed) SVG.setAttribute("SVG-Replacer", "true");
 	}
 }
 
@@ -57,16 +58,21 @@ function update() {
  * @param {string} newPath New d attribute of a path.
  * @param {string} oldPath Old d attribute of a path.
  * @param {SVGElement} SVG The SVG element.
+ * @return {boolean} True if some paths have been changed.
  */
 function replacePaths(newPath, oldPath, SVG) {
+	let path_changed = false;
 	for (let svgg of SVG.children) {
 		if (svgg.nodeName === "g") {
-			replacePaths(newPath, oldPath, svgg);
+			path_changed = replacePaths(newPath, oldPath, svgg);
 		} else if (svgg.nodeName === "path") {
-			if (svgg.getAttribute("d") === oldPath)
+			if (svgg.getAttribute("d") === oldPath) {
+				path_changed = true;
 				svgg.setAttribute("d", newPath);
+			}
 		}
 	}
+	return path_changed;
 }
 
 /**
