@@ -5,20 +5,20 @@ var SVG_cache = { r: 0, c: 0 };
 let loading = document.getElementById("loading");
 let main = document.getElementById("main");
 let domain_selector = document.getElementById("domain_selector");
-let delete_domain = document.getElementById("delete_domain");
+let delete_domain_button = document.getElementById("delete_domain");
 let svg_table = document.getElementById("svg_table");
-let original_svg = document.getElementById("original_svg");
-let target_svg = document.getElementById("target_svg");
-let original_text = document.getElementById("original_text");
-let target_text = document.getElementById("target_text");
-let save_svg = document.getElementById("save_svg");
-let delete_svg = document.getElementById("delete_svg");
+let old_svg_display = document.getElementById("original_svg");
+let new_svg_display = document.getElementById("target_svg");
+let old_path_textarea = document.getElementById("original_text");
+let new_path_textarea = document.getElementById("target_text");
+let save_svg_button = document.getElementById("save_svg");
+let restore_svg_button = document.getElementById("delete_svg");
 let import_button = document.getElementById("import");
 let export_button = document.getElementById("export");
 
 browser.storage.onChanged.addListener(load);
 
-delete_domain.onclick = () => {
+delete_domain_button.onclick = () => {
 	if (selectedDomain()) {
 		SVG_cache = { r: 0, c: 0 };
 		delete pref_cache[selectedDomain()];
@@ -32,23 +32,23 @@ domain_selector.onchange = () => {
 	loadSVGs();
 };
 
-save_svg.onclick = () => {
+save_svg_button.onclick = () => {
 	if (selectedDomain() && selectedSVG()) {
-		if (original_text.value === target_text.value) {
-			pref_cache[selectedDomain()][original_text.value] = "null";
+		if (old_path_textarea.value === new_path_textarea.value) {
+			pref_cache[selectedDomain()][old_path_textarea.value] = "null";
 			selectedSVG().classList.remove("edited");
 		} else {
-			pref_cache[selectedDomain()][original_text.value] = target_text.value;
+			pref_cache[selectedDomain()][old_path_textarea.value] = new_path_textarea.value;
 			selectedSVG().classList.add("edited");
 		}
 		browser.storage.local.set(pref_cache);
 	}
 }
 
-delete_svg.onclick = () => {
+restore_svg_button.onclick = () => {
 	if (selectedDomain() && selectedSVG()) {
-		target_svg.value = original_svg.value;
-		pref_cache[selectedDomain()][original_text.value] = "null";
+		new_svg_display.innerHTML = old_svg_display.innerHTML;
+		pref_cache[selectedDomain()][old_path_textarea.value] = "null";
 		selectedSVG().classList.remove("edited");
 		browser.storage.local.set(pref_cache);
 	}
@@ -108,18 +108,18 @@ function loadSVGs() {
 	let domain = selectedDomain();
 	let cell_count = 0;
 	let current_row = svg_table.insertRow();
-	for (let SVGContent in pref_cache[domain]) {
+	for (let path in pref_cache[domain]) {
 		let current_cell = current_row.insertCell();
-		if (pref_cache[domain][SVGContent] != "null") {
-			current_cell.innerHTML = `<svg>${pref_cache[domain][SVGContent]}</svg>`;
+		if (pref_cache[domain][path] != "null") {
+			current_cell.innerHTML = `<svg><path d="${pref_cache[domain][path]}"></path></svg>`;
 			current_cell.classList.add("edited");
 		} else {
-			current_cell.innerHTML = `<svg>${SVGContent}</svg>`;
+			current_cell.innerHTML = `<svg><path d="${path}"></path></svg>`;
 		}
 		current_cell.onclick = () => {
 			if (selectedSVG()) selectedSVG().classList.remove("selected");
 			current_cell.classList.add("selected");
-			loadSVGToEditor(SVGContent);
+			loadSVGToEditor(path);
 			SVG_cache.r = current_cell.parentNode.rowIndex;
 			SVG_cache.c = current_cell.cellIndex;
 		};
@@ -136,10 +136,10 @@ function loadSVGs() {
 
 function clearSVGs() {
 	svg_table.innerHTML = "";
-	original_svg.innerHTML = "";
-	original_text.value = "";
-	target_svg.innerHTML = "";
-	target_text.value = "";
+	old_svg_display.innerHTML = "";
+	old_path_textarea.value = "";
+	new_svg_display.innerHTML = "";
+	new_path_textarea.value = "";
 }
 
 function selectedDomain() {
@@ -150,25 +150,25 @@ function selectedSVG() {
 	return document.getElementsByClassName("selected")[0];
 }
 
-function loadSVGToEditor(originalSVG) {
-	original_svg.innerHTML = `<svg>${originalSVG}</svg>`;
-	original_text.value = originalSVG;
-	let replacementSVG = pref_cache[selectedDomain()][originalSVG];
-	if (replacementSVG === "null") {
-		target_svg.innerHTML = `<svg>${originalSVG}</svg>`;
-		target_text.value = originalSVG;
+function loadSVGToEditor(oldPath) {
+	old_svg_display.innerHTML = `<svg><path d="${oldPath}"></path></svg>`;
+	old_path_textarea.value = oldPath;
+	let newPath = pref_cache[selectedDomain()][oldPath];
+	if (newPath === "null") {
+		new_svg_display.innerHTML = `<svg><path d="${oldPath}"></path></svg>`;
+		new_path_textarea.value = oldPath;
 	} else {
-		target_svg.innerHTML = `<svg>${replacementSVG}</svg>`;
-		target_text.value = replacementSVG;
+		new_svg_display.innerHTML = `<svg><path d="${newPath}"></path></svg>`;
+		new_path_textarea.value = newPath;
 	}
-	autoScaleSVGInSquare(original_svg.firstChild);
-	autoScaleSVGInSquare(target_svg.firstChild);
+	autoScaleSVGInSquare(old_svg_display.firstChild);
+	autoScaleSVGInSquare(new_svg_display.firstChild);
 }
 
 function autoScaleAllSVG() {
-	let SVGCollection = document.getElementsByTagName("svg");
-	for (let SVGElement of SVGCollection) {
-		autoScaleSVGInSquare(SVGElement);
+	let SVGs = document.getElementsByTagName("svg");
+	for (let SVG of SVGs) {
+		autoScaleSVGInSquare(SVG);
 	}
 }
 

@@ -3,12 +3,12 @@ Data structure:
 pref = {
 	"www.youtube.com": { //pref_domain
 		//innerHTML of svg tag (SVGContent)
-		"<path>...</path>": "null",
-		"<path>...</path>": "<path>...</path>"
+		"path d": "null",
+		"path d": "path d"
 	},
 	"www.example.com": {
-		"<path>...</path>": "<path>...</path>",
-		"<g>...</g>": "<g>...</g>"
+		"path d": "path d",
+		"path d": "null"
 	}
 } */
 
@@ -32,7 +32,6 @@ browser.tabs.query({ active: true, currentWindow: true }, tabs => {
 		block_info.parentElement.hidden = true;
 		collect_SVG.parentElement.hidden = false;
 		collect_SVG.onclick = () => {
-			console.log("POPUP_COLLECT");
 			browser.tabs.executeScript(id, { file: "collect_SVG.js" }).then(
 				SVGContentCollection => storeSVG(url, SVGContentCollection[0])
 			);

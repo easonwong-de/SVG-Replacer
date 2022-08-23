@@ -16,13 +16,10 @@ var mutationObs = new MutationObserver((mutaions) => {
 
 browser.storage.local.get(pref => {
 	pref_domain_cache = pref[document.domain];
-	for (let oldSVGContent in pref_domain_cache) {
-		let newSVGContent = pref_domain_cache[oldSVGContent];
-		if (typeof newSVGContent === "string" && newSVGContent != "null") {
-			if (newSVGContent === "") newSVGContent = "<g></g>";
-		} else {
-			delete pref_domain_cache[oldSVGContent];
-		}
+	for (let oldPath in pref_domain_cache) {
+		let newPath = pref_domain_cache[oldPath];
+		if (typeof newPath != "string" || newPath == "null")
+			delete pref_domain_cache[oldPath];
 	}
 	if (pref_domain_cache) {
 		update();
@@ -35,55 +32,57 @@ browser.storage.local.get(pref => {
  * Finds customized SVGs on the websites and replaces them.
  */
 function update() {
-	let SVGCollection = document.getElementsByTagName("svg");
-	for (let oldSVGContent in pref_domain_cache) {
-		let newSVGContent = pref_domain_cache[oldSVGContent];
-		for (let SVGElement of SVGCollection) {
-			if (SVGElement.firstChild.nodeName === "g") {
-				for (let SVGGroup of SVGElement.children) {
-					if (!SVGGroup.getAttribute("SVG-Replacer") && SVGGroup.innerHTML === oldSVGContent)
-						replaceSVG(SVGElement, newSVGContent);
-				}
-			} else {
-				if (!SVGElement.getAttribute("SVG-Replacer") && SVGElement.innerHTML === oldSVGContent)
-					replaceSVG(SVGElement, newSVGContent);
-			}
+	let SVGs = document.getElementsByTagName("svg");
+	for (let SVG of SVGs) {
+		if ((SVG.firstChild && SVG.firstChild.nodeName === "defs")
+			|| SVG.getAttribute("SVG-Replacer")) continue;
+		const { marginT, marginB, marginL, marginR } = getSVGMargin(SVG);
+		for (let oldPath in pref_domain_cache) {
+			let newPath = pref_domain_cache[oldPath];
+			replacePaths(newPath, oldPath, SVG);
+		}
+		const { xMin, xMax, yMin, yMax } = getSVGDimension(SVG);
+		const x = xMin - marginL * (xMax - xMin);
+		const y = yMin - marginT * (yMax - yMin);
+		const width = (1 + marginL + marginR) * (xMax - xMin);
+		const height = (1 + marginT + marginB) * (yMax - yMin);
+		const viewbox = `${x} ${y} ${width} ${height}`;
+		SVG.setAttribute("viewBox", viewbox);
+		SVG.setAttribute("SVG-Replacer", "true");
+	}
+}
+
+/**
+ * Replaces all oldPaths in an SVG with newPaths.
+ * @param {string} newPath New d attribute of a path.
+ * @param {string} oldPath Old d attribute of a path.
+ * @param {SVGElement} SVG The SVG element.
+ */
+function replacePaths(newPath, oldPath, SVG) {
+	for (let svgg of SVG.children) {
+		if (svgg.nodeName === "g") {
+			replacePaths(newPath, oldPath, svgg);
+		} else if (svgg.nodeName === "path") {
+			if (svgg.getAttribute("d") === oldPath)
+				svgg.setAttribute("d", newPath);
 		}
 	}
 }
 
 /**
- * Replaces the content of SVGElement with newSVGContent and auto scales it.
- * @param {SVGElement} SVGElement SVG HTML element
- * @param {HTMLElement} newSVGContent innerHTML of new SVG HTML element
- */
-function replaceSVG(SVGElement, newSVGContent) {
-	const { marginT, marginB, marginL, marginR } = getSVGMargin(SVGElement);
-	SVGElement.innerHTML = newSVGContent;
-	SVGElement.setAttribute("SVG-Replacer", "true");
-	const { xMin, xMax, yMin, yMax } = getSVGDimension(SVGElement);
-	const x = xMin - marginL * (xMax - xMin);
-	const y = yMin - marginT * (yMax - yMin);
-	const width = (1 + marginL + marginR) * (xMax - xMin);
-	const height = (1 + marginT + marginB) * (yMax - yMin);
-	const viewbox = `${x} ${y} ${width} ${height}`;
-	SVGElement.setAttribute("viewBox", viewbox);
-}
-
-/**
  * Gets the margins of an SVG.
- * @param {SVGElement} SVGElement SVG HTML element.
+ * @param {SVGElement} SVG SVG HTML element.
  * @returns Margins on top, bottom, left and right sides in percentages propotional to SVG's size.
  */
-function getSVGMargin(SVGElement) {
-	const temp = SVGElement.getAttribute("viewBox").split(" ");
+function getSVGMargin(SVG) {
+	const temp = SVG.getAttribute("viewBox").split(" ");
 	const viewBox = {
 		xMin: temp[0],
 		xMax: temp[0] + temp[2],
 		yMin: temp[1],
 		yMax: temp[1] + temp[3]
 	}
-	const { xMin, xMax, yMin, yMax } = getSVGDimension(SVGElement);
+	const { xMin, xMax, yMin, yMax } = getSVGDimension(SVG);
 	return {
 		marginT: (yMin - viewBox.yMin) / (yMax - yMin),
 		marginB: (viewBox.yMax - yMax) / (yMax - yMin),
@@ -95,21 +94,21 @@ function getSVGMargin(SVGElement) {
 /**
  * Gets boundary coordinates of an SVG.
  * @author Nick Scialli
- * @param {SVGElement} SVGElement SVG HTML element.
+ * @param {SVGElement} SVG SVG HTML element.
  * @returns Boundary coordinates of the SVG.
  */
-function getSVGDimension(SVGElement) {
-	return { xMin, xMax, yMin, yMax } = [...SVGElement.children].reduce((dimension, svgg) => {
+function getSVGDimension(SVG) {
+	return { xMin, xMax, yMin, yMax } = [...SVG.children].reduce((dims, svgg) => {
 		try {
 			const { x, y, width, height } = getBetterBBox(svgg);
-			if (!dimension.xMin || x < dimension.xMin) dimension.xMin = x;
-			if (!dimension.xMax || x + width > dimension.xMax) dimension.xMax = x + width;
-			if (!dimension.yMin || y < dimension.yMin) dimension.yMin = y;
-			if (!dimension.yMax || y + height > dimension.yMax) dimension.yMax = y + height;
+			if (!dims.xMin || x < dims.xMin) dims.xMin = x;
+			if (!dims.xMax || x + width > dims.xMax) dims.xMax = x + width;
+			if (!dims.yMin || y < dims.yMin) dims.yMin = y;
+			if (!dims.yMax || y + height > dims.yMax) dims.yMax = y + height;
 		} catch (error) {
 			console.warn("Can't get " + svgg.nodeName + "'s dimension");
 		}
-		return dimension;
+		return dims;
 	}, { xMin: 0, xMax: 0, yMin: 0, yMax: 0 });
 }
 
