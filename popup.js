@@ -32,9 +32,15 @@ browser.tabs.query({ active: true, currentWindow: true }, tabs => {
 		block_info.parentElement.hidden = true;
 		collect_SVG.parentElement.hidden = false;
 		collect_SVG.onclick = () => {
-			browser.tabs.executeScript(id, { file: "collect_SVG.js" }).then(
-				SVGContentCollection => storeSVG(url, SVGContentCollection[0])
-			);
+			browser.tabs.executeScript(id, { file: "collect_SVG.js" }).then(paths => {
+				console.log(paths);
+				if (url.startsWith("http:") || url.startsWith("https:")) {
+					domain = url.split(/\/|\?/)[2];
+					storeSVG(domain, paths[0]);
+				} else {
+					storeSVG(title, paths[0]);
+				}
+			});
 		};
 	} else {
 		block_info.parentElement.hidden = false;
@@ -46,14 +52,13 @@ browser.tabs.query({ active: true, currentWindow: true }, tabs => {
 /**
  * 
  * @param {string} url 
- * @param {object} SVGContentCollection 
+ * @param {object} paths 
  */
-function storeSVG(url, SVGContentCollection) {
+function storeSVG(domain, paths) {
 	browser.storage.local.get(pref => {
-		let domain = url.split(/\/|\?/)[2];
 		let pref_cache_domain = Object.assign({}, pref[domain]);
-		for (let SVGContent in SVGContentCollection) {
-			if (pref_cache_domain[SVGContent] == null) pref_cache_domain[SVGContent] = "null";
+		for (let path in paths) {
+			if (pref_cache_domain[path] == null) pref_cache_domain[path] = "null";
 		}
 		pref[domain] = pref_cache_domain;
 		browser.storage.local.set(pref).then(() => window.close());
