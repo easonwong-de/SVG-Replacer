@@ -12,11 +12,11 @@ pref = {
 	}
 } */
 
-let collect_SVG = document.getElementById("collect_SVG");
 let block_info = document.getElementById("block_info");
-let open_settings = document.getElementById("open_settings");
+let collect_SVG_buton = document.getElementById("collect_SVG");
+let open_settings_button = document.getElementById("open_settings");
 
-open_settings.onclick = () => {
+open_settings_button.onclick = () => {
 	browser.runtime.openOptionsPage();
 	window.close();
 }
@@ -30,8 +30,8 @@ browser.tabs.query({ active: true, currentWindow: true }, tabs => {
 		|| (url.startsWith("file:") && !(url.endsWith(".pdf") || title.endsWith(".pdf")))
 	) {
 		block_info.parentElement.hidden = true;
-		collect_SVG.parentElement.hidden = false;
-		collect_SVG.onclick = () => {
+		collect_SVG_buton.parentElement.hidden = false;
+		collect_SVG_buton.onclick = () => {
 			browser.tabs.executeScript(id, { file: "collect_SVG.js" }).then(paths => {
 				if (url.startsWith("http:") || url.startsWith("https:")) {
 					domain = url.split(/\/|\?/)[2];
@@ -43,15 +43,15 @@ browser.tabs.query({ active: true, currentWindow: true }, tabs => {
 		};
 	} else {
 		block_info.parentElement.hidden = false;
-		collect_SVG.parentElement.hidden = true;
-		collect_SVG.onclick = null;
+		collect_SVG_buton.parentElement.hidden = true;
+		collect_SVG_buton.onclick = null;
 	}
 });
 
 /**
- * 
- * @param {string} url 
- * @param {object} paths 
+ * Stores a path replacement rule under the domain.
+ * @param {string} domain The domain.
+ * @param {object} paths The path replacement rules.
  */
 function storeSVG(domain, paths) {
 	browser.storage.local.get(pref => {

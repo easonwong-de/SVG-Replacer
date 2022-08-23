@@ -1,4 +1,3 @@
-console.log("COLLECT");
 SVGs = document.getElementsByTagName("svg");
 paths = {};
 
@@ -21,5 +20,4 @@ function getPaths(SVG) {
     }
 }
 
-console.log(paths);
 paths;
