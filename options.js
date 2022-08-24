@@ -34,12 +34,33 @@ domain_selector.onchange = () => {
 
 save_svg_button.onclick = () => {
 	if (selectedDomain() && selectedSVG()) {
-		if (old_path_textarea.value === new_path_textarea.value) {
-			pref_cache[selectedDomain()][old_path_textarea.value] = "null";
+		let oldPath = old_path_textarea.value;
+		let newPath = new_path_textarea.value;
+		if (oldPath === newPath) {
+			pref_cache[selectedDomain()][oldPath] = "null";
 			selectedSVG().classList.remove("edited");
 		} else {
-			pref_cache[selectedDomain()][old_path_textarea.value] = new_path_textarea.value;
-			selectedSVG().classList.add("edited");
+			if (newPath.includes("<path")) {
+				let temp = document.createElement('div');
+				temp.innerHTML = newPath.trim();
+				newPath = "";
+				for (let path of temp.getElementsByTagName("path")) {
+					newPath += path.getAttribute("d") + " ";
+				}
+				newPath = newPath.trim();
+				temp.remove();
+				if (oldPath === newPath) {
+					pref_cache[selectedDomain()][oldPath] = "null";
+					selectedSVG().classList.remove("edited");
+				} else {
+					new_path_textarea.value = newPath;
+					pref_cache[selectedDomain()][oldPath] = newPath;
+					selectedSVG().classList.add("edited");
+				}
+			} else {
+				pref_cache[selectedDomain()][oldPath] = newPath;
+				selectedSVG().classList.add("edited");
+			}
 		}
 		browser.storage.local.set(pref_cache);
 	}
@@ -59,10 +80,13 @@ import_button.onchange = () => {
 	var fileReader = new FileReader();
 	fileReader.onload = () => {
 		let import_pref = JSON.parse(fileReader.result);
-		browser.storage.local.set(import_pref);
 		for (let domain in import_pref) {
-			if (typeof import_pref[domain] != "object") return false;
+			if (pref_cache[domain] == null) pref_cache[domain] = {};
+			for (let path in import_pref[domain]) {
+				pref_cache[domain][path] = import_pref[domain][path];
+			}
 		}
+		browser.storage.local.set(pref_cache);
 	};
 	fileReader.readAsText(import_button.files[0]);
 }
@@ -80,6 +104,9 @@ export_button.onclick = () => {
 	});
 }
 
+/**
+ * Loads stored domains and SVGs.
+ */
 function load() {
 	browser.storage.local.get(pref => {
 		pref_cache = pref;
@@ -103,6 +130,9 @@ function load() {
 	});
 }
 
+/**
+ * Loads stored SVGs.
+ */
 function loadSVGs() {
 	clearSVGs();
 	let domain = selectedDomain();
@@ -173,6 +203,7 @@ function autoScaleAllSVG() {
 }
 
 /**
+ * Scales SVGs in square.
  * @author Nick Scialli
  * @param {SVGElement} SVG 
  */
@@ -211,6 +242,7 @@ function autoScaleSVGInSquare(SVG) {
 }
 
 /**
+ * Generates a file and download it.
  * @author Kanchu
  */
 function download(data, filename, type) {

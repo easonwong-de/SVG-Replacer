@@ -1,19 +1,5 @@
 var pref_domain_cache = {};
 
-var mutationObs = new MutationObserver((mutaions) => {
-	let found_svg_mutation = false;
-	for (let mutation of mutaions) {
-		for (let addedNode of mutation.addedNodes) {
-			if (addedNode.nodeName === "svg") {
-				found_svg_mutation = true;
-				update();
-			}
-			if (found_svg_mutation) break;
-		}
-		if (found_svg_mutation) break;
-	}
-});
-
 browser.storage.local.get(pref => {
 	pref_domain_cache = pref[document.domain];
 	for (let oldPath in pref_domain_cache) {
@@ -23,10 +9,23 @@ browser.storage.local.get(pref => {
 	}
 	if (pref_domain_cache) {
 		update();
+		let mutationObs = new MutationObserver((mutaions) => {
+			let found_svg_mutation = false;
+			for (let mutation of mutaions) {
+				for (let addedNode of mutation.addedNodes) {
+					if (addedNode.nodeName === "svg") {
+						found_svg_mutation = true;
+						update();
+					}
+					if (found_svg_mutation) break;
+				}
+				if (found_svg_mutation) break;
+			}
+		});
 		mutationObs.observe(document.body, { childList: true, subtree: true });
+		document.onclick = update;
 	}
 });
-
 
 /**
  * Finds customized SVGs on the websites and replaces them.
@@ -35,7 +34,8 @@ function update() {
 	let SVGs = document.getElementsByTagName("svg");
 	for (let SVG of SVGs) {
 		if ((SVG.firstChild && SVG.firstChild.nodeName === "defs")
-			|| SVG.getAttribute("SVG-Replacer")) continue;
+			|| SVG.getAttribute("SVG-Replacer")
+			|| SVG.getAttribute("SVG-Ignore")) continue;
 		const { marginT, marginB, marginL, marginR } = getSVGMargin(SVG);
 		let path_changed = false;
 		for (let oldPath in pref_domain_cache) {
@@ -49,7 +49,7 @@ function update() {
 		const height = (1 + marginT + marginB) * (yMax - yMin);
 		const viewbox = `${x} ${y} ${width} ${height}`;
 		SVG.setAttribute("viewBox", viewbox);
-		if (path_changed) SVG.setAttribute("SVG-Replacer", "true");
+		SVG.setAttribute(path_changed ? "SVG-Replacer" : "SVG-Ignore", "true");
 	}
 }
 
@@ -141,4 +141,33 @@ function getBetterBBox(svgg) {
 		document.body.removeChild(tempDiv);
 	}
 	return bbox;
+}
+
+browser.runtime.onMessage.addListener((request, sender, sendResponse) => {sendResponse(collectPaths())});
+
+/**
+ * Collects SVG paths on the website.
+ * @returns Object containing SVG paths as keys.
+ */
+function collectPaths() {
+	let SVGs = document.getElementsByTagName("svg");
+	let paths = {};
+	/**
+	 * Collects all paths from an SVG.
+	 * @param {*} SVG The SVG element.
+	 */
+	function getPaths(SVG) {
+		for (let svgg of SVG.children) {
+			if (svgg.nodeName === "g") {
+				getPaths(svgg);
+			} else if (svgg.nodeName === "path") {
+				paths[svgg.getAttribute("d")] = "null";
+			}
+		}
+	}
+	for (let SVG of SVGs) {
+		if (SVG.getAttribute("SVG-Replacer")) continue;
+		getPaths(SVG);
+	}
+	return paths;
 }

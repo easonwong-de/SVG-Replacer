@@ -32,12 +32,12 @@ browser.tabs.query({ active: true, currentWindow: true }, tabs => {
 		block_info.parentElement.hidden = true;
 		collect_SVG_buton.parentElement.hidden = false;
 		collect_SVG_buton.onclick = () => {
-			browser.tabs.executeScript(id, { file: "collect_SVG.js" }).then(paths => {
+			browser.tabs.sendMessage(id, {}, paths => {
 				if (url.startsWith("http:") || url.startsWith("https:")) {
 					domain = url.split(/\/|\?/)[2];
-					storeSVG(domain, paths[0]);
+					storeSVG(domain, paths);
 				} else {
-					storeSVG(title, paths[0]);
+					storeSVG(title, paths);
 				}
 			});
 		};
