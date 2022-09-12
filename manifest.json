@@ -1,6 +1,6 @@
 {
   "name": "SVG Replacer",
-  "version": "0.2",
+  "version": "0.3",
   "description": "Replaces SVG paths with custom ones on websites",
   "author": "Eason Wong",
   "browser_specific_settings": {

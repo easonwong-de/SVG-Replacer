@@ -10,20 +10,15 @@ browser.storage.local.get(pref => {
 	if (pref_domain_cache) {
 		update();
 		let mutationObs = new MutationObserver((mutaions) => {
-			let found_svg_mutation = false;
 			for (let mutation of mutaions) {
-				for (let addedNode of mutation.addedNodes) {
-					if (addedNode.nodeName === "svg") {
-						found_svg_mutation = true;
-						update();
-					}
-					if (found_svg_mutation) break;
+				if (mutation.addedNodes.length === 0) {
+					break;
+				} else {
+					update();
 				}
-				if (found_svg_mutation) break;
 			}
 		});
 		mutationObs.observe(document.body, { childList: true, subtree: true });
-		document.onclick = update;
 	}
 });
 
@@ -37,19 +32,24 @@ function update() {
 			|| SVG.getAttribute("SVG-Replacer")
 			|| SVG.getAttribute("SVG-Ignore")) continue;
 		const { marginT, marginB, marginL, marginR } = getSVGMargin(SVG);
+		const marginMin = Math.min(marginT, marginB, marginL, marginR);
 		let path_changed = false;
 		for (let oldPath in pref_domain_cache) {
 			let newPath = pref_domain_cache[oldPath];
 			path_changed = path_changed || replacePaths(newPath, oldPath, SVG);
 		}
-		const { xMin, xMax, yMin, yMax } = getSVGDimension(SVG);
-		const x = xMin - marginL * (xMax - xMin);
-		const y = yMin - marginT * (yMax - yMin);
-		const width = (1 + marginL + marginR) * (xMax - xMin);
-		const height = (1 + marginT + marginB) * (yMax - yMin);
-		const viewbox = `${x} ${y} ${width} ${height}`;
-		SVG.setAttribute("viewBox", viewbox);
-		SVG.setAttribute(path_changed ? "SVG-Replacer" : "SVG-Ignore", "true");
+		if (path_changed) {
+			const { xMin, xMax, yMin, yMax } = getSVGDimension(SVG);
+			const x = xMin - marginMin * (xMax - xMin);
+			const y = yMin - marginMin * (yMax - yMin);
+			const width = (1 + marginMin + marginMin) * (xMax - xMin);
+			const height = (1 + marginMin + marginMin) * (yMax - yMin);
+			const viewbox = `${x} ${y} ${width} ${height}`;
+			SVG.setAttribute("viewBox", viewbox);
+			SVG.setAttribute("SVG-Replacer", "true");
+		} else {
+			SVG.setAttribute("SVG-Ignore", "true");
+		}
 	}
 }
 
