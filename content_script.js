@@ -19,6 +19,7 @@ browser.storage.local.get(pref => {
 			}
 		});
 		mutationObs.observe(document.body, { childList: true, subtree: true });
+		document.addEventListener("click", update);
 	}
 });
 
@@ -28,9 +29,9 @@ browser.storage.local.get(pref => {
 function update() {
 	let SVGs = document.getElementsByTagName("svg");
 	for (let SVG of SVGs) {
-		if ((SVG.firstChild && SVG.firstChild.nodeName === "defs")
-			|| SVG.getAttribute("SVG-Replacer")
-			|| SVG.getAttribute("SVG-Ignore")) continue;
+		if (SVG.getAttribute("SVG-Replacer")
+			|| SVG.getAttribute("SVG-Ignore")
+			|| (SVG.firstChild && SVG.firstChild.nodeName === "defs")) continue;
 		const { marginT, marginB, marginL, marginR } = getSVGMargin(SVG);
 		const marginMin = Math.min(marginT, marginB, marginL, marginR);
 		let path_changed = false;
@@ -143,7 +144,7 @@ function getBetterBBox(svgg) {
 	return bbox;
 }
 
-browser.runtime.onMessage.addListener((request, sender, sendResponse) => {sendResponse(collectPaths())});
+browser.runtime.onMessage.addListener((request, sender, sendResponse) => { sendResponse(collectPaths()) });
 
 /**
  * Collects SVG paths on the website.
