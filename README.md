@@ -13,9 +13,9 @@ Replaces SVG paths on websites with custom ones
 ## What Does The Add-on Do
 This add-on can collect SVG (Scalable Vector Graphics, often used to render symbols and icons) paths on websites and provide an easy way to replace them. 
 
-<!-- <img src="https://addons.mozilla.org/user-media/previews/full/272/272045.png" width="600">
+<img src="https://addons.mozilla.org/user-media/previews/full/273/273378.png" width="600">
 
-<img src="https://addons.mozilla.org/user-media/previews/full/272/272046.png" width="600"> -->
+<img src="https://addons.mozilla.org/user-media/previews/full/273/273379.png" width="600">
 
 ## License
 [The MIT License (MIT)](https://github.com/YS-Wong/SVG-Replacer/raw/main/LICENSE)  
